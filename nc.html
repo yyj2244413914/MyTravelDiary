@@ -434,7 +434,7 @@ window.addEventListener('message',function(e){
         renderCollection();
         showSlide(0);
         // 留言板（城市级别共用）
-        var cityAbbr = 'zjj';
+        var cityAbbr = 'nc';
         function loadMessageList() {
           var list = JSON.parse(localStorage.getItem('spot_message_list_' + cityAbbr) || '[]');
           list = list.filter(function(msg){ return msg.nick && msg.nick !== '匿名'; });
@@ -955,7 +955,7 @@ window.addEventListener('message',function(e){
         renderCollection();
         showSlide(0);
         // 留言板（城市级别共用）
-        var cityAbbr = 'zjj';
+        var cityAbbr = 'nc';
         function loadMessageList() {
           var list = JSON.parse(localStorage.getItem('spot_message_list_' + cityAbbr) || '[]');
           list = list.filter(function(msg){ return msg.nick && msg.nick !== '匿名'; });
