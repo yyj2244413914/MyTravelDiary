@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>新加坡景点</title>
+    <title>深圳景点</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: '微软雅黑', Arial, sans-serif;
-            background: url('/imagesxjp/新加坡背景.png') no-repeat center center fixed;
+            background: url('/imagesxjp/深圳背景.png') no-repeat center center fixed;
             background-size: cover;
             overflow-x: hidden;
             overflow-y: hidden;
@@ -22,11 +22,7 @@
             overflow-y: hidden;
             height: 100%;
         }
-        .map-section {
-            width: 100vw;
-            height: 166px;
-            position: relative;
-        }
+
         .spot-menu {
             position: relative;
             width: 220px;
@@ -65,6 +61,7 @@
             padding: 32px 24px 24px 24px;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* 防止子元素滚动条溢出 */
         }
         .tab-header {
             position: absolute;
@@ -110,12 +107,14 @@
             min-height: 120px;
             box-sizing: border-box;
             position: relative;
+            max-height: 520px; /* 限制最大高度 */
+            overflow: hidden;  /* 防止滚动条溢出 */
         }
         .tab-content {
             margin: 0;
             font-size: 1.1em;
             min-height: 80px;
-            max-height: 600px;
+            max-height: 480px; /* 比wrapper略小，留出padding */
             overflow-y: auto;
             overflow-x: hidden;
         }
@@ -133,9 +132,10 @@
         .slideshow-arrow { background: #fffbe6; border: 1.5px solid #ffd600; border-radius: 50%; width: 38px; height: 38px; font-size: 10.5px; color: #333; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 12px; }
         .slideshow-img { width: 320px; height: 220px; object-fit: cover; border-radius: 10px; }
         .slideshow-mode {
-          background: url('/imagesxjp/背景.gif') center center no-repeat;
+          background: url('/imgszc/深圳背景.gif') center center no-repeat;
           background-size: cover;
           position: relative;
+          overflow: hidden; /* 禁用滚动条 */
         }
         .slideshow-mode::before {
           content: "";
@@ -163,28 +163,7 @@
           border-radius: 10px;
         }
         /* ↑↑↑ 你可以在这里自定义两种模式的图片大小 ↑↑↑ */
-        /* 全屏背景层样式，z-index为0，内容都在其上方 */
-        #page-bg {
-            position: fixed;
-            left: 0; top: 0; right: 0; bottom: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            background: url('/imagesxjp/新加坡背景.png') no-repeat center center fixed;
-            background-size: cover;
-            opacity: 0.85; /* 透明度可调 */
-            pointer-events: none; /* 不影响页面交互 */
-        }
-        /* 主内容区和弹窗设置z-index:1，保证在背景层之上 */
-        .map-section,
-        .spot-menu,
-        .spot-content-area,
-        .tab-header,
-        .tab-content-wrapper,
-        #imgModal {
-            position: relative;
-            z-index: 1;
-        }
+
         figcaption {
             font-size: 0.98em;
             color: #888;
@@ -192,10 +171,19 @@
             text-align: center;
             margin-top: 6px;
         }
+        /* 高德地图容器样式 */
+        #amap-container {
+            width: 100vw;
+            height: 300px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
-    <audio id="bgm" src="/music/sz.mp3" autoplay loop style="display:none"></audio>
+    <audio id="bgm" src="/music/szc.mp3" autoplay loop style="display:none"></audio>
     <script>
       document.addEventListener('click', function playMusicOnce() {
         var audio = document.getElementById('bgm');
@@ -203,24 +191,120 @@
         document.removeEventListener('click', playMusicOnce);
       });
     </script>
-    <!-- 全屏背景层，保证背景图片始终覆盖整个页面且带透明度 -->
-    <div id="page-bg"></div>
-    <div class="map-section">
-        <iframe id="custom-content" width="100%" height="200" frameborder="0" style="border:0;overflow:hidden;" scrolling="no" allowfullscreen></iframe>
-    </div>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=762fa3a9356ba9e93b1f063fd5984ad0"></script>
+    <script>
+      // 景点坐标数据
+      var spots = [
+        {
+          name: '哈工深圳校区',
+          position: [113.936, 22.593], // 哈尔滨工业大学深圳校区坐标
+          address: '深圳市南山区西丽深圳大学城'
+        },
+        {
+          name: '南科大',
+          position: [113.931, 22.595], // 南方科技大学坐标
+          address: '深圳市南山区学苑大道1088号'
+        },
+        {
+          name: '世界之窗',
+          position: [113.974, 22.539], // 世界之窗坐标
+          address: '深圳市南山区深南大道9037号'
+        },
+        {
+          name: '深圳西交同乡会',
+          position: [113.945, 22.598], // 深圳塘朗君璞酒店坐标
+          address: '深圳市南山区塘朗君璞酒店'
+        }
+      ];
+      
+      // 计算四个景点的中心位置
+      var centerLng = (113.936 + 113.931 + 113.974 + 113.945) / 4; // 经度平均值
+      var centerLat = (22.593 + 22.595 + 22.539 + 22.598) / 4; // 纬度平均值
+      var centerPosition = [centerLng, centerLat]; // 中心位置
+      
+      var map, markers = [];
+      
+      // 等待页面加载完成后初始化地图
+      window.onload = function() {
+        try {
+          map = new AMap.Map('amap-container', {
+            center: centerPosition, // 使用计算出的中心位置
+            zoom: 12,
+            viewMode: '2D'
+          });
+          
+          // 添加景点位置（无标记）
+          spots.forEach(function(spot, index) {
+            // 创建蓝色实心圆点（初始隐藏）
+            var circle = new AMap.Circle({
+              center: spot.position,
+              radius: 100,
+              strokeColor: '#0066cc',
+              strokeWeight: 2,
+              strokeOpacity: 1,
+              fillColor: '#0066cc',
+              fillOpacity: 1,
+              zIndex: 10
+            });
+            
+            // 添加信息窗口
+            var infoWindow = new AMap.InfoWindow({
+              content: `<div style="padding:12px;transform:scale(0.9);border-radius:8px;"><h3 style="margin:0 0 6px 0;color:#333;font-size:18px;font-weight:bold;text-align:center;">${spot.name}</h3><p style="margin:0;color:#666;font-size:14px;text-align:center;line-height:1.4;">${spot.address}</p></div>`,
+              offset: new AMap.Pixel(0, -1)
+            });
+            
+            // 存储光圈和信息窗口
+            markers.push({
+              position: spot.position,
+              circle: circle,
+              infoWindow: infoWindow,
+              name: spot.name
+            });
+          });
+          // 固定地图位置，不自动适配
+          // 初始化后默认聚焦第一个景点（哈工深圳校区）
+          handleMenuClick(0);
+          
+          console.log('高德地图初始化成功，已添加景点标记');
+        } catch (error) {
+          console.error('高德地图初始化失败:', error);
+          // 如果地图加载失败，显示一个占位符
+          document.getElementById('amap-container').innerHTML = '<div style="width:100%;height:100%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#666;font-size:16px;">地图加载中...</div>';
+        }
+      };
+      
+      // 菜单点击事件处理
+      function handleMenuClick(index) {
+        if (map && markers[index]) {
+          // 地图跳转到对应位置
+          map.setCenter(markers[index].position);
+          map.setZoom(14);
+          // 先移除所有光圈
+          markers.forEach(function(m) {
+            map.remove(m.circle);
+          });
+          // 只显示当前景点的光圈
+          map.add(markers[index].circle);
+          // 显示信息窗口
+          markers[index].infoWindow.open(map, markers[index].position);
+        }
+      }
+    </script>
+
+    <!-- 顶部高德地图 -->
+    <div id="amap-container" style="width:100vw;height:300px;"></div>
     <hr style="margin:0; border: none; border-top: 2px solid #ffd600; width: 100vw;">
-    <div style="display:flex;align-items:stretch;height:calc(100vh - 166px);margin:0;padding:0;">
+    <div style="display:flex;align-items:stretch;height:calc(100vh - 300px);margin:0;padding:0;">
         <div class="spot-menu" style="width:220px;background:#fff;box-sizing:border-box;margin:0;padding:0;">
             <div style="font-size:1.3em;font-weight:bold;margin-bottom:18px;color:#333;letter-spacing:2px;
                 background:#fff;border:2px solid #ffd600;border-radius:10px;padding:10px 0;text-align:center;width:100%;box-sizing:border-box;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin:0;">
                 景点打卡
             </div>
             <ul style="background:#fff;border:2px solid #ffd600;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:10px 0 10px 0;margin:0;width:100%;box-sizing:border-box;">
-                <li>环球影城</li>
-                <li>花园城市</li>
-                <li>鱼尾狮公园</li>
-                <li>金沙购物广场</li>
-                <li>樟宜国际机场</li>
+                <li>哈工深圳校区</li>
+                <li>南科大</li>
+                <li>世界之窗</li>
+                <li>深圳西交同乡会</li>
             </ul>
         </div>
         <hr style="align-self:stretch;margin:0;padding:0;border:none;border-left:2px solid #ffd600;height:100%;">
@@ -273,93 +357,61 @@
       <img id="modalImg" src="" alt="大图" style="max-width:90vw;max-height:90vh;box-shadow:0 4px 32px #000;border-radius:12px;">
     </div>
     <script>
-        // 生成iframe内容
-        var spotImgs = [
-            'images/环球影城.jpg',
-            'images/花园城市.jpg',
-            'images/鱼尾狮公园.jpg',
-            'images/金沙购物广场.jpg',
-            'images/樟宜国际机场.jpg'
-        ];
-        var arrowImg = 'images/箭头.png';
-        var spotNames = ['环球影城','花园城市','鱼尾狮公园','金沙购物广场','樟宜国际机场'];
-        var spotRowHtml = '<div class="spot-frame"><div class="spot-row">';
-        for(let i=0;i<5;i++){
-            spotRowHtml += `<div class='spot-img-wrap'><img class='spot-img' id='spot${i}' src='${spotImgs[i]}' alt='${spotNames[i]}'><div class='spot-label'>${spotNames[i]}</div></div>`;
-            if(i<4) spotRowHtml += `<img class='arrow-img' src='${arrowImg}' alt='arrow'>`;
-        }
-        spotRowHtml += '</div></div>';
-        var iframeHtml = `
-<!DOCTYPE html>
-<html lang='zh-CN'>
-<head>
-<meta charset='UTF-8'>
-<title>景点展示</title>
-<style>
-html,body{margin:0;padding:0;font-family:'微软雅黑',Arial,sans-serif;background:transparent!important;overflow:hidden;height:100%;}
-.spot-frame {
-  background: #fff;
-  border: 2px solid #ffd600;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-  padding: 32px 32px 24px 32px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  max-width: 900px;
-}
-.spot-row{display:flex;align-items:center;justify-content:center;gap:24px;}
-.spot-img-wrap{display:flex;flex-direction:column;align-items:center;}
-.spot-img{width:80px;height:80px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.12);transition:transform 0.4s cubic-bezier(.68,-0.55,.27,1.55),box-shadow 0.4s,filter 0.4s;cursor:pointer;background:#fff;}
-.spot-img.active{transform:scale(1.35) rotateY(15deg);box-shadow:0 0 32px 8px #ffe082,0 2px 16px #333;filter:brightness(1.2) drop-shadow(0 0 16px #ffd600);z-index:10;}
-.arrow-img{width:66px;height:40px;object-fit:contain;opacity:0.8;}
-.spot-label{margin-top:8px;font-size:1em;color:#666;text-align:center;}
-</style>
-</head>
-<body>
-${spotRowHtml}
-<script>
-function activateSpot(idx){
-  document.querySelectorAll('.spot-img').forEach((img,i)=>{
-    if(i===idx){img.classList.add('active');}else{img.classList.remove('active');}
-  });
-}
-activateSpot(0);
-window.addEventListener('message',function(e){
-  if(typeof e.data==='number'){activateSpot(e.data);}
-});
-<\/script>
-</body>
-</html>
-`;
-        var iframe = document.getElementById('custom-content');
-        iframe.onload = function(){
-            var doc = iframe.contentDocument || iframe.contentWindow.document;
-            doc.open();
-            doc.write(iframeHtml);
-            doc.close();
-        };
-        if(iframe.contentDocument && iframe.contentDocument.readyState==='complete'){
-            iframe.onload();
-        }
         var menuLis = document.querySelectorAll('.spot-menu li');
         var spotLogs = [
-          `<div><h3>天门山</h3><p>天门山是张家界著名的自然景区，以天门洞、玻璃栈道和索道闻名。山顶风光壮丽，云雾缭绕，宛如仙境。</p></div>`,
-          `<div><h3>袁家界</h3><p>袁家界以奇峰怪石著称，是电影《阿凡达》哈利路亚山的取景地。站在观景台上可俯瞰群峰。</p></div>`,
-          `<div><h3>金鞭溪</h3><p>金鞭溪是一条穿越张家界森林公园的清澈溪流，两岸奇峰林立，空气清新，是徒步的绝佳选择。</p></div>`,
-          `<div><h3>黄龙洞</h3><p>黄龙洞是中国著名的溶洞景观，洞内钟乳石千姿百态，地下河蜿蜒曲折，景色神秘。</p></div>`,
-          `<div><h3>十里画廊</h3><p>十里画廊是一条风景如画的峡谷，沿途怪石嶙峋，宛如天然画卷。</p></div>`
+          `<div>
+            <p style='text-decoration:underline wavy blue;'>飞机落地深圳次日，准备去参观cxz孝子未来的大学——哈工深。</p>
+            <figure>
+              <img src="imgszc/3.jpg"  width=30%></img>
+              <img src="imgszc/5.jpg"  width=53%></img>
+              <figcaption>不错不错😊为孝子高兴</figcaption>
+            </figure>
+            <figure> 
+              <img src="imgszc/1.jpg"  width=60%></img>
+              <img src="imgszc/2.jpg"  width=33%></img>
+              <figcaption>校区看着不大🤫🤫</figcaption>
+            </figure>
+            <figure style="text-align:center;">
+              <img src="imgszc/4.jpg"  width=30%></img>
+              <figcaption>
+                也是和清华搭上关系了😒
+              </figcaption>
+              </figure>
+              <figure style="text-align:center;">
+                <img src="imgszc/6.jpg"  width=30%></img>
+                <img src="imgszc/7.jpg"  width=30%></img>
+                <figcaption>
+                  此时，我们的主角.....😌
+                </figcaption>
+                </figure>
+                <figure style="text-align:center;">
+                  <img src="imgszc/8.jpg"  width=26%></img>
+                  <img src="imgszc/9.jpg"  width=66%></img>
+                  <img src="imgszc/10.jpg"  width=30%></img>
+                  <figcaption>校园一景</figcaption></figure>
+                  <figure text-align:center;>
+                    <img src="imgszc/11.jpg"  width=50%></img>
+                    <figcaption>来一张深圳大学城地图</figcaption>
+                    </figure>
+                      <hr>
+                      <br>
+                      <p style="color:bgreen;">当日QQ动态：要怪就怪超短裙，害爸爸错失和孝子做大学同学的机会🤮 🤮<p>
+                        <img src="imgszc/12.jpg" width=30%></img>
+            </div>`,
+          `<div><h3>南科大</h3><p>南方科技大学是一所创新型大学，以理工科见长，校园现代化程度高。</p></div>`,
+          `<div><h3>世界之窗</h3><p>世界之窗是深圳著名的主题公园，汇集了世界各地的著名建筑和文化景观。</p></div>`,
+          `<div><h3>深圳西交同乡会</h3><p>西安交通大学深圳校友会，为在深圳的西交校友提供交流平台。</p></div>`
         ];
-        // 相册图片数组（共用）
+        // 相册图片数组（深圳景点图片）
         var images = [
-          {src:'/images/zjj1.jpg'},
-          {src:'/images/zjj2.jpg'},
-          {src:'/images/zjj3.jpg'},
-          {src:'/images/zjj4.jpg'},
-          {src:'/images/zjj5.jpg'},
-          {src:'/images/zjj6.jpg'},
-          {src:'/images/zjj7.jpg'},
-          {src:'/images/zjj8.jpg'}
+          {src:'/images/szc1.jpg'},
+          {src:'/images/szc2.jpg'},
+          {src:'/images/szc3.jpg'},
+          {src:'/images/szc4.jpg'},
+          {src:'/images/szc5.jpg'},
+          {src:'/images/szc6.jpg'},
+          {src:'/images/szc7.jpg'},
+          {src:'/images/szc8.jpg'}
         ];
         // 菜单切换只切换日志
         function updateSpotContent(idx) {
@@ -368,15 +420,15 @@ window.addEventListener('message',function(e){
         if(menuLis.length) {
           menuLis.forEach(function(l){l.classList.remove('active');});
           menuLis[0].classList.add('active');
-          document.getElementById('custom-content').contentWindow.postMessage(0,'*');
           updateSpotContent(0);
         }
         menuLis.forEach(function(li,idx){
           li.onclick = function(){
-            document.getElementById('custom-content').contentWindow.postMessage(idx,'*');
             menuLis.forEach(function(l){l.classList.remove('active');});
             li.classList.add('active');
             updateSpotContent(idx);
+            // 调用地图交互函数
+            handleMenuClick(idx);
           };
         });
         // 相册渲染
@@ -416,13 +468,16 @@ window.addEventListener('message',function(e){
           btn.onclick=function(){
             modeBtns.forEach(b=>b.classList.remove('active'));
             btn.classList.add('active');
+            var albumContent = document.querySelector('.album-content');
             if(btn.dataset.mode==='collection'){
               collection.style.display='';
               slideshow.style.display='none';
+              albumContent.style.overflowY = 'auto'; // 集合模式允许滚动
               pause();
             }else{
               collection.style.display='none';
               slideshow.style.display='';
+              albumContent.style.overflowY = 'hidden'; // 放映模式禁用滚动
               showSlide(current);
               play();
             }
@@ -433,7 +488,7 @@ window.addEventListener('message',function(e){
         renderCollection();
         showSlide(0);
         // 留言板（城市级别共用）
-        var cityAbbr = 'sz';
+        var cityAbbr = 'szc';
         function loadMessageList() {
           var list = JSON.parse(localStorage.getItem('spot_message_list_' + cityAbbr) || '[]');
           list = list.filter(function(msg){ return msg.nick && msg.nick !== '匿名'; });
