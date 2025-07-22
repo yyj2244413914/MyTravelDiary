@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>深圳景点</title>
+    <title>张家界景点</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: '微软雅黑', Arial, sans-serif;
-            background: url('/imagesxjp/深圳背景.png') no-repeat center center fixed;
+            background: url('imgzjj/张家界背景.png') no-repeat center center fixed;
             background-size: cover;
             overflow-x: hidden;
             overflow-y: hidden;
@@ -132,7 +132,7 @@
         .slideshow-arrow { background: #fffbe6; border: 1.5px solid #ffd600; border-radius: 50%; width: 38px; height: 38px; font-size: 10.5px; color: #333; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 12px; }
         .slideshow-img { width: 320px; height: 220px; object-fit: cover; border-radius: 10px; }
         .slideshow-mode {
-          background: url('/imgszc/深圳背景.gif') center center no-repeat;
+          background: url('imgzjj/张家界背景.gif') center center no-repeat;
           background-size: cover;
           position: relative;
           overflow: hidden; /* 禁用滚动条 */
@@ -183,7 +183,7 @@
     </style>
 </head>
 <body>
-    <audio id="bgm" src="/music/szc.mp3" autoplay loop style="display:none"></audio>
+    <audio id="bgm" src="music/szc.mp3" autoplay loop style="display:none"></audio>
     <script>
       document.addEventListener('click', function playMusicOnce() {
         var audio = document.getElementById('bgm');
@@ -191,51 +191,35 @@
         document.removeEventListener('click', playMusicOnce);
       });
     </script>
-    <script src="https://webapi.amap.com/maps?v=2.0&key=762fa3a9356ba9e93b1f063fd5984ad0"></script>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=24188d2488c7012aa53d83d4a189370b"></script>
     <script>
       // 景点坐标数据
       var spots = [
         {
-          name: '哈工深圳校区',
-          position: [113.936, 22.593], // 哈尔滨工业大学深圳校区坐标
-          address: '深圳市南山区西丽深圳大学城'
+          name: '张家界国家森林公园',
+          position: [110.550378, 29.344608],
+          address: '湖南省张家界市武陵源区'
         },
         {
-          name: '南科大',
-          position: [113.931, 22.595], // 南方科技大学坐标
-          address: '深圳市南山区学苑大道1088号'
-        },
-        {
-          name: '世界之窗',
-          position: [113.974, 22.539], // 世界之窗坐标
-          address: '深圳市南山区深南大道9037号'
-        },
-        {
-          name: '深圳西交同乡会',
-          position: [113.945, 22.598], // 深圳塘朗君璞酒店坐标
-          address: '深圳市南山区塘朗君璞酒店'
+          name: '七十二奇楼',
+          position: [110.478874, 29.117245],
+          address: '湖南省张家界市永定区解放路72号'
         }
       ];
-      
-      // 计算四个景点的中心位置
-      var centerLng = (113.936 + 113.931 + 113.974 + 113.945) / 4; // 经度平均值
-      var centerLat = (22.593 + 22.595 + 22.539 + 22.598) / 4; // 纬度平均值
-      var centerPosition = [centerLng, centerLat]; // 中心位置
-      
+      // 计算中心点
+      var centerLng = (110.550378 + 110.478874) / 2;
+      var centerLat = (29.344608 + 29.117245) / 2;
+      var centerPosition = [centerLng, centerLat];
       var map, markers = [];
-      
-      // 等待页面加载完成后初始化地图
       window.onload = function() {
         try {
           map = new AMap.Map('amap-container', {
-            center: centerPosition, // 使用计算出的中心位置
-            zoom: 12,
+            center: spots[0].position, // 初始化中心点为国家森林公园
+            zoom: 14,                  // 初始化缩放级别为14
             viewMode: '2D'
           });
-          
-          // 添加景点位置（无标记）
           spots.forEach(function(spot, index) {
-            // 创建蓝色实心圆点（初始隐藏）
+            // 创建蓝色实心圆点
             var circle = new AMap.Circle({
               center: spot.position,
               radius: 100,
@@ -246,14 +230,10 @@
               fillOpacity: 1,
               zIndex: 10
             });
-            
-            // 添加信息窗口
             var infoWindow = new AMap.InfoWindow({
               content: `<div style="padding:12px;transform:scale(0.9);border-radius:8px;"><h3 style="margin:0 0 6px 0;color:#333;font-size:18px;font-weight:bold;text-align:center;">${spot.name}</h3><p style="margin:0;color:#666;font-size:14px;text-align:center;line-height:1.4;">${spot.address}</p></div>`,
               offset: new AMap.Pixel(0, -1)
             });
-            
-            // 存储光圈和信息窗口
             markers.push({
               position: spot.position,
               circle: circle,
@@ -261,36 +241,28 @@
               name: spot.name
             });
           });
-          // 固定地图位置，不自动适配
-          // 初始化后默认聚焦第一个景点（哈工深圳校区）
-          handleMenuClick(0);
-          
-          console.log('高德地图初始化成功，已添加景点标记');
+          // 初始化后模拟点击菜单的第一个li（国家森林公园）
+          var menuLis = document.querySelectorAll('.spot-menu li');
+          if(menuLis.length) {
+            menuLis[0].click();
+          }
         } catch (error) {
-          console.error('高德地图初始化失败:', error);
-          // 如果地图加载失败，显示一个占位符
           document.getElementById('amap-container').innerHTML = '<div style="width:100%;height:100%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#666;font-size:16px;">地图加载中...</div>';
         }
       };
-      
       // 菜单点击事件处理
       function handleMenuClick(index) {
         if (map && markers[index]) {
-          // 地图跳转到对应位置
           map.setCenter(markers[index].position);
-          map.setZoom(14);
-          // 先移除所有光圈
+          map.setZoom(14); // 保持和初始化一致
           markers.forEach(function(m) {
             map.remove(m.circle);
           });
-          // 只显示当前景点的光圈
           map.add(markers[index].circle);
-          // 显示信息窗口
           markers[index].infoWindow.open(map, markers[index].position);
         }
       }
     </script>
-
     <!-- 顶部高德地图 -->
     <div id="amap-container" style="width:100vw;height:300px;"></div>
     <hr style="margin:0; border: none; border-top: 2px solid #ffd600; width: 100vw;">
@@ -301,10 +273,8 @@
                 景点打卡
             </div>
             <ul style="background:#fff;border:2px solid #ffd600;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:10px 0 10px 0;margin:0;width:100%;box-sizing:border-box;">
-                <li>哈工深圳校区</li>
-                <li>南科大</li>
-                <li>世界之窗</li>
-                <li>深圳西交同乡会</li>
+                <li>张家界国家森林公园</li>
+                <li>七十二奇楼</li>
             </ul>
         </div>
         <hr style="align-self:stretch;margin:0;padding:0;border:none;border-left:2px solid #ffd600;height:100%;">
@@ -360,58 +330,288 @@
         var menuLis = document.querySelectorAll('.spot-menu li');
         var spotLogs = [
           `<div>
-            <p style='text-decoration:underline wavy blue;'>飞机落地深圳次日，准备去参观cxz孝子未来的大学——哈工深。</p>
-            <figure>
-              <img src="imgszc/3.jpg"  width=30%></img>
-              <img src="imgszc/5.jpg"  width=53%></img>
-              <figcaption>不错不错😊为孝子高兴</figcaption>
+            <p style="font-size:1.5em; color:red;">Day 0</p>
+            <hr>
+            <p>2024.10.3，赶在国庆节西安即将迎来第一波小（大）降温前逃离西安&#128512;</p>
+            <img src="imgzjj/1.jpg" width=40%>
+            <img src="imgzjj/2.jpg" width=18%>
+            <figure style="text-align:center;">
+              <img src="imgzjj/4.jpg" width=35%></img>
+              <img src="imgzjj/3.jpg" width=25%></img>
+              <img src="imgzjj/13.jpg" width=30%></img>
+              <figcaption>
+                下飞机先来西站接我的好基友wqm（居然不抽王源周边，差评&#128521;）。
+              </figcaption>
             </figure>
-            <figure> 
-              <img src="imgszc/1.jpg"  width=60%></img>
-              <img src="imgszc/2.jpg"  width=33%></img>
-              <figcaption>校区看着不大🤫🤫</figcaption>
+            <p style="text-decoration:underline dotted green;">因为来到景区已是下午了，距离景区闭园不久了，所以我们就进里面随便逛了一条小路。故把今日记为Day 0。</p>
+            <figure>
+              <img src="imgzjj/6.jpg" width=40%>
+              <img src="imgzjj/5.jpg" width=40%>
+              <figcaption>南门一景
+              </figure>
+              <figure>
+                <img src="imgzjj/8.jpg" width=80%></img>
+                <img src="imgzjj/7.jpg" width=40%></img>
+                <img src="imgzjj/14.jpg" width=30%></img>
+                <figcaption>真的有那种意境喂😄</figcaption></figure>
+                <figure style="text-align:center;">
+                  <img src="imgzjj/10.jpg" width=20%>\</img>
+                  <figcaption>
+                   捡到一颗松果，好硬😟
+                  </figcaption>
+                </figure>
+                <figure>
+                  <img src="imgzjj/9.jpg" width=30%></img>
+                  <img src="imgzjj/11.jpg" width=30%></img>
+                  <figcaption>
+                   人机wqm硬要带我走了一条“未曾选择的小路”，终于在天黑前下山了。
+                  </figcaption>
+                  </figure>
+                  <figure style="text-align:center;">
+                    <img src="imgzjj/12.jpg" width=20%></img>
+                    <figcaption>
+                      当天微信朋友圈
+                    </figcaption>
+                    </figure>
+                    <hr>
+                 <p style="font-size:1.5em; color:red;">Day 1</p>
+                 <hr>
+                 <p style="font-size:1.4em; color:pink;">
+                  来之前就听说张家界的韩国游客多，果不其然，确实如此。不知是哪个人才把带韩国家人去张家界旅游这件事和孝道结合到一起的👍👍👍</p>
+                 <p style="color:blue;">先放张我们两天的路线图</p>
+                 <img src="imgzjj/1.png" width="85%" style="display: block; margin: 0 auto;">
+                 <p>Day 1 从杨家界坐索道上山暴走。</p>
+                 <figure>
+                  <img src="imgzjj/19.jpg" width="35%" ></img>
+                  <img src="imgzjj/15.jpg" width="35%" ></img>
+                  <figcaption>来都来了</figcaption></figure>
+                 <figure>
+                    <img src="imgzjj/22.jpg" width="40%" ></img>
+                    <img src="imgzjj/30.jpg" width="40%" ></img>
+                    <figcaption>缆车，视野不错</figcaption></figure>
+                 <figure>
+                      <img src="imgzjj/16.jpg" width="40%" ></img>
+                      <img src="imgzjj/17.jpg" width="60%" ></img>
+                      <img src="imgzjj/18.jpg" width="40%" ></img>
+                      <img src="imgzjj/20.jpg" width="40%" ></img>
+                      <img src="imgzjj/21.jpg" width="40%" ></img>
+                      <figcaption>😫爬山，爬到脚软（人好多）😫</figcaption></figure>
+                  <figure>
+                    <img src="imgzjj/23.jpg" width="40%" ></img>
+                    <img src="imgzjj/48.jpg" width="25%" ></img>
+                    <figcaption>
+                     嬉皮笑脸的wqm
+                    </figcaption>
+                    </figure>
+                    <figure style="text-align:center;">
+                      <img src="imgzjj/25.jpg" width="60%" ></img>
+                      <img src="imgzjj/26.jpg" width="30%" ></img>
+                      <img src="imgzjj/27.jpg" width="30%" ></img>
+                      <img src="imgzjj/28.jpg" width="30%" ></img>
+                      <figcaption>下山了，终于不走山路了，下一站是金鞭溪！！</figcaption></figure>
+                  <figure style="text-align:center;">
+                      <img src="imgzjj/25.jpg" width="60%" ></img>
+                      <img src="imgzjj/26.jpg" width="30%" ></img>
+                      <img src="imgzjj/27.jpg" width="30%" ></img>
+                      <img src="imgzjj/28.jpg" width="30%" ></img>
+                      <figcaption>金鞭溪铺垫——游山玩水，先游山，再玩水</figcaption></figure>
+                  <figure style="text-align:center;">
+                      <img src="imgzjj/24.jpg" width="30%" ></img>
+                      <img src="imgzjj/29.jpg" width="30%" ></img>
+                      <img src="imgzjj/32.jpg" width="30%" ></img>
+                      <img src="imgzjj/33.jpg" width="30%" ></img>
+                      <img src="imgzjj/34.jpg" width="30%" ></img>
+                      <img src="imgzjj/36.jpg" width="30%" ></img>
+                      <img src="imgzjj/37.jpg" width="30%" ></img>
+                      <img src="imgzjj/38.jpg" width="30%" ></img>
+                      <img src="imgzjj/41.jpg" width="30%" ></img>
+                      <figcaption>金鞭溪：每一处都是山水画</figcaption></figure>
+                      <figure style="text-align:center;">
+                      <img src="imgzjj/31.jpg" width="30%" ></img>
+                      <img src="imgzjj/42.jpg" width="30%" ></img>
+                      <img src="imgzjj/43.jpg" width="30%" ></img>
+                      <img src="imgzjj/44.jpg" width="30%" ></img>
+                      <img src="imgzjj/45.jpg" width="30%" ></img>
+                      <img src="imgzjj/47.jpg" width="30%" ></img>
+                      <figcaption>奇山异石</figcaption></figure>
+                      <figure style="text-align:center;">
+                      <img src="imgzjj/35.jpg" width="30%" ></img>
+                      <img src="imgzjj/39.jpg" width="30%" ></img>
+                      <img src="imgzjj/40.jpg" width="30%" ></img>
+                      <img src="imgzjj/46.jpg" width="30%" ></img>
+                      <figcaption>你就说专不专业</figcaption></figure>
+                      <hr>
+                      <p style="font-size: 1.5em; color:red;">Day 2</p>
+                      <hr>
+                      <p style="font-size:1.4em; color:pink;">第二天就主要游玩了黄石寨这一片，其实也有点遗憾，因为需要排很长的队所以放弃乘坐所谓的“亚洲第一天梯”——百龙天梯。</p>
+                      <figure style="text-align:center;">
+                        <img src="imgzjj/62.jpg" width=55%></img>
+                        <figcaption>景区地图</figcaption>
+                        </figure>
+                      <figure style="text-align:center;">
+                        <img src="imgzjj/58.jpg" style="width: 30%;"></img> 
+                        <img src="imgzjj/60.jpg" style="width: 50%;"></img> 
+                        <figcaption>黄石寨标志</figcaption>
+                      </figure>
+                      <figure style="text-align:center;">
+                        <img src="imgzjj/50.jpg" style="width: 30%;"></img> 
+                        <img src="imgzjj/52.jpg" style="width: 30%;"></img>
+                        <img src="imgzjj/61.jpg" style="width: 30%;"></img>
+                        <figcaption>名副其实，佩服起名字的人的想象力</figcaption>
+                      </figure>
+                      <figure style="text-align:center;">
+                        <img src="imgzjj/49.jpg" style="width: 60%;"></img>
+                        <img src="imgzjj/56.jpg" style="width: 60%;"></img>
+                        <figcaption>连绵起伏的山峦（脚已废）</figcaption>
+                        </figure>
+                        <figure style="text-align:center;">
+                        <img src="imgzjj/53.jpg" style="width: 60%;"></img>
+                        <img src="imgzjj/51.jpg" style="width: 60%;"></img>
+                        <figcaption>😨恐高者勿入😨</figcaption>
+                        </figure>
+                      <figure style="text-align:center;">
+                        <img src="imgzjj/55.jpg" style="width: 50%;"></img>
+                        <figcaption>从前有座山，山里有座庙~~</figcaption>
+                        </figure>
+                        <figure style="text-align:center;">
+                          <img src="imgzjj/59.jpg" style="width: 60%;"></img>
+                          <figcaption>密集恐惧症者勿入......</figcaption>
+                          </figure>
+                      <figure style="text-align:center;">
+                        <img src="imgzjj/54.jpg" style="width: 60%;"></img>
+                        <figcaption>景区门口：别了——张家界国家森林公园！😫😫</figcaption>
+                        <img src="imgzjj/57.jpg" style="width: 60%;"></img>
+                        ❤️❤️QQ动态❤️❤️
+            </div>`,
+          `<div>
+            <p style="font-size: 1.5em; color:red;">10.05晚上（离开森林公园后），前往下一个景点——七十二奇楼，感受湘西文化的独特魅力。</p>
+            <hr>
+            <p style="font-size:1.1em; color:pink;">张家界实际上就一个依山傍水的小县城，高楼大厦几乎没有，但这里的人靠山吃山，靠水吃水，通过旅游业带动当地经济，让“张家界”这一地名响彻全国，甚至亚洲。</p>
+            <p>说来遗憾，武陵源（位于张家界国家森林公园里面，著名的索溪峪坐落于此，因时间紧张故跳过）和天门山（因天门洞而闻名）都这两个景点都没有去。还有鬼谷峡门也因为已经废弃而，考虑到安全问题也放弃了。理想的张家界游玩时间，个人觉得应该为四到五天。</p>
+             <hr>
+             <p style="font-size: 1.5em; color:red;">10.05晚</p>
+             <hr>
+             晚上的七十二奇楼震撼至极！！上图：
+             <figure style="text-align:center;">
+             <img src="imgzjj/64.jpg" style="width: 40%;"></img>
+             <img src="imgzjj/65.jpg" style="width: 40%;"></img>
+             <figcaption>七十二奇楼夜景</figcaption>
+             </figure>
+            <figure style="text-align:center;">
+            <img src="imgzjj/63.jpg" style="width: 70%;"></img>
+            <img src="imgzjj/69.jpg" style="width: 40%;"></img>
+            <figcaption>wqm的手😒😒</figcaption>
             </figure>
             <figure style="text-align:center;">
-              <img src="imgszc/4.jpg"  width=30%></img>
-              <figcaption>
-                也是和清华搭上关系了😒
-              </figcaption>
-              </figure>
-              <figure style="text-align:center;">
-                <img src="imgszc/6.jpg"  width=30%></img>
-                <img src="imgszc/7.jpg"  width=30%></img>
-                <figcaption>
-                  此时，我们的主角.....😌
-                </figcaption>
+              <img src="imgzjj/66.jpg" style="width: 40%;"></img>
+              <img src="imgzjj/67.jpg" style="width: 40%;"></img>
+              <figcaption>严禁攀爬......那我问你？！</figcaption>
+            </figure>
+            <figure style="text-align:center;">
+              <img src="imgzjj/68.jpg" style="width: 40%;"></img>
+              <figcaption>论共享电瓶如何塞下两个成年男性——小朋友不要模仿......
+                <br>
+                难离难舍想抱紧些，茫茫人生好像荒野~~</figcaption>
                 </figure>
-                <figure style="text-align:center;">
-                  <img src="imgszc/8.jpg"  width=26%></img>
-                  <img src="imgszc/9.jpg"  width=66%></img>
-                  <img src="imgszc/10.jpg"  width=30%></img>
-                  <figcaption>校园一景</figcaption></figure>
-                  <figure text-align:center;>
-                    <img src="imgszc/11.jpg"  width=50%></img>
-                    <figcaption>来一张深圳大学城地图</figcaption>
-                    </figure>
-                      <hr>
-                      <br>
-                      <p style="color:bgreen;">当日QQ动态：要怪就怪超短裙，害爸爸错失和孝子做大学同学的机会🤮 🤮<p>
-                        <img src="imgszc/12.jpg" width=30%></img>
-            </div>`,
-          `<div><h3>南科大</h3><p>南方科技大学是一所创新型大学，以理工科见长，校园现代化程度高。</p></div>`,
-          `<div><h3>世界之窗</h3><p>世界之窗是深圳著名的主题公园，汇集了世界各地的著名建筑和文化景观。</p></div>`,
-          `<div><h3>深圳西交同乡会</h3><p>西安交通大学深圳校友会，为在深圳的西交校友提供交流平台。</p></div>`
+              <hr>
+              <p style="font-size: 1.5em; color:red;">10.06早</p>
+             <hr>
+             figure style="text-align:center;">
+             <img src="imgzjj/73.jpg" style="width: 40%;"></img>
+             <img src="imgzjj/70.jpg" style="width: 40%;"></img>
+             <img src="imgzjj/71.jpg" style="width: 40%;"></img>
+             <img src="imgzjj/72.jpg" style="width: 40%;"></img>
+              <figcaption>早上的七十二奇楼，原来楼下全是商业街</figcaption>
+              </figure>
+              <hr>
+              <p style="font-size: 1.5em; color:red;">10.06晚，回学校😭😭</p>
+              <img src="imgzjj/74.jpg" style="width: 50%;"></img>
+              <hr>
+              <br>
+              <p style="font-size: 1.5em; color:green;">关于我和wqm的轶事</p>
+              <br>
+              <p style="text-decoration: underline blue;color:red;">说来话长，我们小学和初中都是同班同学，结果这家伙初中玩爽了去了二中普通班🤷🤷，后面也就很少见面了......</p>
+              <p style="text-decoration: underline blue;color:red;">后来他去了湖南邵阳读大学，现在他开始跟着家人做生意了（苟富贵勿相忘😭）</p>
+              <p>总之，人生如逆旅，且行且珍惜......</p>
+              <p>最后，祝友谊长存。</p>
+            </div>`
         ];
-        // 相册图片数组（深圳景点图片）
+        // 相册图片数组（张家界景点图片）
         var images = [
-          {src:'/images/szc1.jpg'},
-          {src:'/images/szc2.jpg'},
-          {src:'/images/szc3.jpg'},
-          {src:'/images/szc4.jpg'},
-          {src:'/images/szc5.jpg'},
-          {src:'/images/szc6.jpg'},
-          {src:'/images/szc7.jpg'},
-          {src:'/images/szc8.jpg'}
+          {src:'/imgzjj/1.jpg'},
+          {src:'/imgzjj/2.jpg'},
+          {src:'/imgzjj/3.jpg'},
+          {src:'/imgzjj/4.jpg'},
+          {src:'/imgzjj/5.jpg'},
+          {src:'/imgzjj/6.jpg'},
+          {src:'/imgzjj/7.jpg'},
+          {src:'/imgzjj/8.jpg'},
+          {src:'/imgzjj/9.jpg'},
+          {src:'/imgzjj/10.jpg'},
+          {src:'/imgzjj/11.jpg'},
+          {src:'/imgzjj/12.jpg'},
+          {src:'/imgzjj/13.jpg'},
+          {src:'/imgzjj/14.jpg'},
+          {src:'/imgzjj/15.jpg'},
+          {src:'/imgzjj/16.jpg'},
+          {src:'/imgzjj/17.jpg'}, 
+          {src:'/imgzjj/18.jpg'},
+          {src:'/imgzjj/19.jpg'},
+          {src:'/imgzjj/20.jpg'},
+          {src:'/imgzjj/21.jpg'},
+          {src:'/imgzjj/22.jpg'},
+          {src:'/imgzjj/23.jpg'},
+          {src:'/imgzjj/24.jpg'},
+          {src:'/imgzjj/25.jpg'},
+          {src:'/imgzjj/26.jpg'},
+          {src:'/imgzjj/27.jpg'}, 
+          {src:'/imgzjj/28.jpg'},
+          {src:'/imgzjj/29.jpg'},
+          {src:'/imgzjj/30.jpg'},
+          {src:'/imgzjj/31.jpg'},
+          {src:'/imgzjj/32.jpg'},
+          {src:'/imgzjj/33.jpg'},
+          {src:'/imgzjj/34.jpg'},
+          {src:'/imgzjj/35.jpg'},
+          {src:'/imgzjj/36.jpg'},
+          {src:'/imgzjj/37.jpg'}, 
+          {src:'/imgzjj/38.jpg'},
+          {src:'/imgzjj/39.jpg'},
+          {src:'/imgzjj/40.jpg'},
+          {src:'/imgzjj/41.jpg'},
+          {src:'/imgzjj/42.jpg'},
+          {src:'/imgzjj/43.jpg'},
+          {src:'/imgzjj/44.jpg'},
+          {src:'/imgzjj/45.jpg'},
+          {src:'/imgzjj/46.jpg'},
+          {src:'/imgzjj/47.jpg'}, 
+          {src:'/imgzjj/48.jpg'},
+          {src:'/imgzjj/49.jpg'},
+          {src:'/imgzjj/50.jpg'},
+          {src:'/imgzjj/51.jpg'},
+          {src:'/imgzjj/52.jpg'},
+          {src:'/imgzjj/53.jpg'},
+          {src:'/imgzjj/54.jpg'},
+          {src:'/imgzjj/55.jpg'},
+          {src:'/imgzjj/56.jpg'},
+          {src:'/imgzjj/57.jpg'}, 
+          {src:'/imgzjj/58.jpg'},
+          {src:'/imgzjj/59.jpg'},
+          {src:'/imgzjj/60.jpg'},
+          {src:'/imgzjj/61.jpg'},
+          {src:'/imgzjj/62.jpg'},
+          {src:'/imgzjj/63.jpg'},
+          {src:'/imgzjj/64.jpg'},
+          {src:'/imgzjj/65.jpg'},
+          {src:'/imgzjj/66.jpg'},
+          {src:'/imgzjj/67.jpg'}, 
+          {src:'/imgzjj/68.jpg'},
+          {src:'/imgzjj/69.jpg'},
+          {src:'/imgzjj/70.jpg'},
+          {src:'/imgzjj/71.jpg'},
+          {src:'/imgzjj/72.jpg'},
+          {src:'/imgzjj/73.jpg'},
+          {src:'/imgzjj/74.jpg'}
         ];
         // 菜单切换只切换日志
         function updateSpotContent(idx) {

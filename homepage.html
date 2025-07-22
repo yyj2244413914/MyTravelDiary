@@ -143,16 +143,16 @@
     <script>
         // 使用现代 ES6 语法
         // 初始化地图对象，设置中心点、图层、缩放、视角等参数
-        const map = new AMap.Map('container', {
-            center: [111.3, 16.67], // 让所有标记城市尽量居中显示
+       const map = new AMap.Map('container', {
+            center: [111.3, 16.67], // 北京
             layers: [
-                new AMap.TileLayer.Satellite(), // 卫星图层
-                new AMap.TileLayer.RoadNet()    // 路网图层
+                new AMap.TileLayer.Satellite(),
+                new AMap.TileLayer.RoadNet()
             ],
-            zoom: 5.2,           // 缩放级别
+            zoom: 5.25,           // 缩放级别
             viewMode: '3D',      // 3D 模式
-            pitch: 52,           // 俯仰角
-            rotation: 0,         // 旋转角
+            pitch: 55,           // 俯仰角
+            rotation: 30,        // 逆时针旋转20度
             zoomEnable: false,   // 禁止缩放
             dragEnable: false    // 禁止拖动
         });

@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>深圳景点</title>
+    <title>南昌景点</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: '微软雅黑', Arial, sans-serif;
-            background: url('/imagesxjp/深圳背景.png') no-repeat center center fixed;
+            background: url('/imagesxjp/南昌背景.png') no-repeat center center fixed;
             background-size: cover;
             overflow-x: hidden;
             overflow-y: hidden;
@@ -34,6 +34,8 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
         }
         .spot-menu li {
             background: #fff;
@@ -132,7 +134,7 @@
         .slideshow-arrow { background: #fffbe6; border: 1.5px solid #ffd600; border-radius: 50%; width: 38px; height: 38px; font-size: 10.5px; color: #333; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 12px; }
         .slideshow-img { width: 320px; height: 220px; object-fit: cover; border-radius: 10px; }
         .slideshow-mode {
-          background: url('/imgszc/深圳背景.gif') center center no-repeat;
+          background: url('/imgszc/南昌背景.gif') center center no-repeat;
           background-size: cover;
           position: relative;
           overflow: hidden; /* 禁用滚动条 */
@@ -191,51 +193,34 @@
         document.removeEventListener('click', playMusicOnce);
       });
     </script>
-    <script src="https://webapi.amap.com/maps?v=2.0&key=762fa3a9356ba9e93b1f063fd5984ad0"></script>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=f6af5f1633fed0ab7cdf8315c2847021"></script>
     <script>
-      // 景点坐标数据
+      // 南昌景点坐标数据
       var spots = [
-        {
-          name: '哈工深圳校区',
-          position: [113.936, 22.593], // 哈尔滨工业大学深圳校区坐标
-          address: '深圳市南山区西丽深圳大学城'
-        },
-        {
-          name: '南科大',
-          position: [113.931, 22.595], // 南方科技大学坐标
-          address: '深圳市南山区学苑大道1088号'
-        },
-        {
-          name: '世界之窗',
-          position: [113.974, 22.539], // 世界之窗坐标
-          address: '深圳市南山区深南大道9037号'
-        },
-        {
-          name: '深圳西交同乡会',
-          position: [113.945, 22.598], // 深圳塘朗君璞酒店坐标
-          address: '深圳市南山区塘朗君璞酒店'
-        }
+        { name: '海昏侯博物馆', position: [115.7306, 28.8657], address: '南昌市新建区大塘坪乡观西村' },
+        { name: '南昌之星', position: [115.8572, 28.6986], address: '南昌市红谷滩新区赣江南大道' },
+        { name: '绿地双子塔', position: [115.8585, 28.6982], address: '南昌市红谷滩新区绿地中央广场' },
+        { name: '大士院', position: [115.8932, 28.6756], address: '南昌市西湖区中山路' },
+        { name: '贺龙指挥部旧址', position: [115.8937, 28.6822], address: '南昌市西湖区中山路' },
+        { name: '万寿宫', position: [115.8935, 28.6827], address: '南昌市西湖区中山路' },
+        { name: '八一广场', position: [115.8936, 28.6820], address: '南昌市西湖区八一大道' },
+        { name: '八一起义纪念馆', position: [115.8938, 28.6823], address: '南昌市西湖区中山路' },
+        { name: '秋水广场', position: [115.8571, 28.6926], address: '南昌市红谷滩新区赣江南大道' },
+        { name: '滕王阁', position: [115.8577, 28.6829], address: '南昌市东湖区仿古街58号' }
       ];
-      
-      // 计算四个景点的中心位置
-      var centerLng = (113.936 + 113.931 + 113.974 + 113.945) / 4; // 经度平均值
-      var centerLat = (22.593 + 22.595 + 22.539 + 22.598) / 4; // 纬度平均值
-      var centerPosition = [centerLng, centerLat]; // 中心位置
-      
+      // 计算中心点
+      var centerLng = spots.reduce((sum, s) => sum + s.position[0], 0) / spots.length;
+      var centerLat = spots.reduce((sum, s) => sum + s.position[1], 0) / spots.length;
+      var centerPosition = [centerLng, centerLat];
       var map, markers = [];
-      
-      // 等待页面加载完成后初始化地图
       window.onload = function() {
         try {
           map = new AMap.Map('amap-container', {
-            center: centerPosition, // 使用计算出的中心位置
+            center: centerPosition,
             zoom: 12,
             viewMode: '2D'
           });
-          
-          // 添加景点位置（无标记）
           spots.forEach(function(spot, index) {
-            // 创建蓝色实心圆点（初始隐藏）
             var circle = new AMap.Circle({
               center: spot.position,
               radius: 100,
@@ -246,14 +231,10 @@
               fillOpacity: 1,
               zIndex: 10
             });
-            
-            // 添加信息窗口
             var infoWindow = new AMap.InfoWindow({
-              content: `<div style="padding:12px;transform:scale(0.9);border-radius:8px;"><h3 style="margin:0 0 6px 0;color:#333;font-size:18px;font-weight:bold;text-align:center;">${spot.name}</h3><p style="margin:0;color:#666;font-size:14px;text-align:center;line-height:1.4;">${spot.address}</p></div>`,
+              content: `<div style=\"padding:12px;transform:scale(0.9);border-radius:8px;\"><h3 style=\"margin:0 0 6px 0;color:#333;font-size:18px;font-weight:bold;text-align:center;\">${spot.name}</h3><p style=\"margin:0;color:#666;font-size:14px;text-align:center;line-height:1.4;\">${spot.address}</p></div>`,
               offset: new AMap.Pixel(0, -1)
             });
-            
-            // 存储光圈和信息窗口
             markers.push({
               position: spot.position,
               circle: circle,
@@ -261,36 +242,24 @@
               name: spot.name
             });
           });
-          // 固定地图位置，不自动适配
-          // 初始化后默认聚焦第一个景点（哈工深圳校区）
+          // 初始化后直接聚焦第一个景点
           handleMenuClick(0);
-          
-          console.log('高德地图初始化成功，已添加景点标记');
         } catch (error) {
-          console.error('高德地图初始化失败:', error);
-          // 如果地图加载失败，显示一个占位符
-          document.getElementById('amap-container').innerHTML = '<div style="width:100%;height:100%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#666;font-size:16px;">地图加载中...</div>';
+          document.getElementById('amap-container').innerHTML = '<div style=\"width:100%;height:100%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#666;font-size:16px;\">地图加载中...</div>';
         }
       };
-      
-      // 菜单点击事件处理
       function handleMenuClick(index) {
         if (map && markers[index]) {
-          // 地图跳转到对应位置
           map.setCenter(markers[index].position);
-          map.setZoom(14);
-          // 先移除所有光圈
+          map.setZoom(12.6);
           markers.forEach(function(m) {
             map.remove(m.circle);
           });
-          // 只显示当前景点的光圈
           map.add(markers[index].circle);
-          // 显示信息窗口
           markers[index].infoWindow.open(map, markers[index].position);
         }
       }
     </script>
-
     <!-- 顶部高德地图 -->
     <div id="amap-container" style="width:100vw;height:300px;"></div>
     <hr style="margin:0; border: none; border-top: 2px solid #ffd600; width: 100vw;">
@@ -301,10 +270,16 @@
                 景点打卡
             </div>
             <ul style="background:#fff;border:2px solid #ffd600;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:10px 0 10px 0;margin:0;width:100%;box-sizing:border-box;">
-                <li>哈工深圳校区</li>
-                <li>南科大</li>
-                <li>世界之窗</li>
-                <li>深圳西交同乡会</li>
+                <li>海昏侯博物馆</li>
+                <li>南昌之星</li>
+                <li>绿地双子塔</li>
+                <li>大士院</li>
+                <li>贺龙指挥部旧址</li>
+                <li>万寿宫</li>
+                <li>八一广场</li>
+                <li>八一起义纪念馆</li>
+                <li>秋水广场</li>
+                <li>滕王阁</li>
             </ul>
         </div>
         <hr style="align-self:stretch;margin:0;padding:0;border:none;border-left:2px solid #ffd600;height:100%;">
