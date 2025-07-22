@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>深圳景点</title>
+    <title>广州景点</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: '微软雅黑', Arial, sans-serif;
-            background: url('/imagesxjp/深圳背景.png') no-repeat center center fixed;
+            background: url('/imagesxjp/广州背景.png') no-repeat center center fixed;
             background-size: cover;
             overflow-x: hidden;
             overflow-y: hidden;
@@ -132,7 +132,7 @@
         .slideshow-arrow { background: #fffbe6; border: 1.5px solid #ffd600; border-radius: 50%; width: 38px; height: 38px; font-size: 10.5px; color: #333; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0 12px; }
         .slideshow-img { width: 320px; height: 220px; object-fit: cover; border-radius: 10px; }
         .slideshow-mode {
-          background: url('/imgszc/深圳背景.gif') center center no-repeat;
+          background: url('/imgszc/广州背景.gif') center center no-repeat;
           background-size: cover;
           position: relative;
           overflow: hidden; /* 禁用滚动条 */
@@ -191,35 +191,40 @@
         document.removeEventListener('click', playMusicOnce);
       });
     </script>
-    <script src="https://webapi.amap.com/maps?v=2.0&key=762fa3a9356ba9e93b1f063fd5984ad0"></script>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=e26421ec12176a4eddb8cd2d70df1057"></script>
     <script>
       // 景点坐标数据
       var spots = [
         {
-          name: '哈工深圳校区',
-          position: [113.936, 22.593], // 哈尔滨工业大学深圳校区坐标
-          address: '深圳市南山区西丽深圳大学城'
+          name: '广州塔',
+          position: [113.324, 23.109], // 广州塔坐标
+          address: '广州市海珠区阅江西路222号'
         },
         {
-          name: '南科大',
-          position: [113.931, 22.595], // 南方科技大学坐标
-          address: '深圳市南山区学苑大道1088号'
+          name: '中山大学',
+          position: [113.297, 23.096], // 中山大学南校区坐标
+          address: '广州市海珠区新港西路135号'
         },
         {
-          name: '世界之窗',
-          position: [113.974, 22.539], // 世界之窗坐标
-          address: '深圳市南山区深南大道9037号'
+          name: '长隆',
+          position: [113.338, 23.006], // 长隆欢乐世界坐标
+          address: '广州市番禺区汉溪大道东与长隆地铁大道交汇处'
         },
         {
-          name: '深圳西交同乡会',
-          position: [113.945, 22.598], // 深圳塘朗君璞酒店坐标
-          address: '深圳市南山区塘朗君璞酒店'
+          name: '烈士陵园',
+          position: [113.259, 23.135], // 广州起义烈士陵园坐标
+          address: '广州市越秀区中山二路92号'
+        },
+        {
+          name: '孙耀威演唱会',
+          position: [113.326, 23.137], // 宝能广州国际体育演艺中心坐标
+          address: '广州市白云区白云大道南1039号宝能广州国际体育演艺中心'
         }
       ];
       
       // 计算四个景点的中心位置
-      var centerLng = (113.936 + 113.931 + 113.974 + 113.945) / 4; // 经度平均值
-      var centerLat = (22.593 + 22.595 + 22.539 + 22.598) / 4; // 纬度平均值
+      var centerLng = (113.324 + 113.297 + 113.338 + 113.326) / 4; // 经度平均值
+      var centerLat = (23.109 + 23.096 + 23.006 + 23.137) / 4; // 纬度平均值
       var centerPosition = [centerLng, centerLat]; // 中心位置
       
       var map, markers = [];
@@ -228,8 +233,8 @@
       window.onload = function() {
         try {
           map = new AMap.Map('amap-container', {
-            center: centerPosition, // 使用计算出的中心位置
-            zoom: 12,
+            center: spots[0].position, // 直接使用广州塔的位置作为中心
+            zoom: 14, // 直接设置为聚焦后的缩放级别
             viewMode: '2D'
           });
           
@@ -262,7 +267,7 @@
             });
           });
           // 固定地图位置，不自动适配
-          // 初始化后默认聚焦第一个景点（哈工深圳校区）
+          // 初始化后默认聚焦第一个景点（广州塔）
           handleMenuClick(0);
           
           console.log('高德地图初始化成功，已添加景点标记');
@@ -301,10 +306,11 @@
                 景点打卡
             </div>
             <ul style="background:#fff;border:2px solid #ffd600;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:10px 0 10px 0;margin:0;width:100%;box-sizing:border-box;">
-                <li>哈工深圳校区</li>
-                <li>南科大</li>
-                <li>世界之窗</li>
-                <li>深圳西交同乡会</li>
+                <li>广州塔</li>
+                <li>中山大学</li>
+                <li>长隆</li>
+                <li>烈士陵园</li>
+                <li>孙耀威演唱会</li>
             </ul>
         </div>
         <hr style="align-self:stretch;margin:0;padding:0;border:none;border-left:2px solid #ffd600;height:100%;">
@@ -359,45 +365,56 @@
     <script>
         var menuLis = document.querySelectorAll('.spot-menu li');
         var spotLogs = [
-          `<div>
-            <p style='text-decoration:underline wavy blue;'>飞机落地深圳次日，准备去参观cxz孝子未来的大学——哈工深。</p>
-            <figure>
-              <img src="imgszc/3.jpg"  width=30%></img>
-              <img src="imgszc/5.jpg"  width=53%></img>
-              <figcaption>不错不错😊为孝子高兴</figcaption>
-            </figure>
-            <figure> 
-              <img src="imgszc/1.jpg"  width=60%></img>
-              <img src="imgszc/2.jpg"  width=33%></img>
-              <figcaption>校区看着不大🤫🤫</figcaption>
+          `<div>   
+            <h style="color:blue;">6.10晚，参加完南科大机试（后续是没通过，我承认菜是原罪......），和我爸去参观“小蛮腰”——广州塔。</h>    
+            <br>
+            <p>
+              感受一下广州塔600米的统治力!!
+            </p>  
+            <img src="imggz/1.jpg" style="display:block; margin:0 auto; width:40%;">
+            <figure style="text-align:center;">
+              <img src="imggz/2.jpg" width="35%;">
+              <img src="imggz/3.jpg" width="60%;">
+              <figcaption>
+                夜景很美，奇特的造型搭配夜幕，有种几何美感？！
+                <br>
+                右图亮点发现没，左边的古塔和右边的广州塔，古典与现代的碰撞。
+              </figcaption>
             </figure>
             <figure style="text-align:center;">
-              <img src="imgszc/4.jpg"  width=30%></img>
+              <img src="imggz/4.jpg" width="40%;">
+              <img src="imggz/5.jpg" width="40%;">
               <figcaption>
-                也是和清华搭上关系了😒
+                我爸给我拍的😊😊
               </figcaption>
-              </figure>
               <figure style="text-align:center;">
-                <img src="imgszc/6.jpg"  width=30%></img>
-                <img src="imgszc/7.jpg"  width=30%></img>
+                <img src="imggz/6.jpg" width="60%;">
                 <figcaption>
-                  此时，我们的主角.....😌
+                  准备上塔了，没想到纤细的塔身里面居然大有洞天😲
                 </figcaption>
-                </figure>
+              </figure>
+              <video controls style="width:25%; height:auto; display:block; margin:0 auto;">
+                <source src="imggz/1.mp4" type="video/mp4">
+              </video>
+              <p>终于轮到我拍这个转场了 🥳 🥳
                 <figure style="text-align:center;">
-                  <img src="imgszc/8.jpg"  width=26%></img>
-                  <img src="imgszc/9.jpg"  width=66%></img>
-                  <img src="imgszc/10.jpg"  width=30%></img>
-                  <figcaption>校园一景</figcaption></figure>
-                  <figure text-align:center;>
-                    <img src="imgszc/11.jpg"  width=50%></img>
-                    <figcaption>来一张深圳大学城地图</figcaption>
-                    </figure>
-                      <hr>
-                      <br>
-                      <p style="color:bgreen;">当日QQ动态：要怪就怪超短裙，害爸爸错失和孝子做大学同学的机会🤮 🤮<p>
-                        <img src="imgszc/12.jpg" width=30%></img>
-            </div>`,
+                  <img src="imggz/7.jpg" width="35%;">
+                  <img src="imggz/8.jpg" width="35%;">
+                  <img src="imggz/9.jpg" width="35%;">
+                  <figcaption>
+                    塔内大厅，为了让游客更好地俯瞰地面，特意关闭灯光（倾斜落地玻璃好评😆😆）
+                  </figcaption>
+                </figure>
+                 <figure style="text-align:center;">
+                  <img src="imggz/10.jpg" width="40%;">
+                  <img src="imggz/11.jpg" width="40%;">
+                    外面还有各种游乐项目。
+                  </figcaption>
+                </figure>
+                <hr>
+                <p>当日QQ动态。</p>
+                <img src="imggz/12.jpg" width="30%;">
+          </div>`,
           `<div><h3>南科大</h3><p>南方科技大学是一所创新型大学，以理工科见长，校园现代化程度高。</p></div>`,
           `<div><h3>世界之窗</h3><p>世界之窗是深圳著名的主题公园，汇集了世界各地的著名建筑和文化景观。</p></div>`,
           `<div><h3>深圳西交同乡会</h3><p>西安交通大学深圳校友会，为在深圳的西交校友提供交流平台。</p></div>`
@@ -571,5 +588,25 @@
         })();
     </script>
 </body>
+
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
