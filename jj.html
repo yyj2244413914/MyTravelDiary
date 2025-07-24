@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>深圳景点</title>
+    <title>九江景点</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: '微软雅黑', Arial, sans-serif;
-            background: url('/imagesxjp/深圳背景.png') no-repeat center center fixed;
+            background: url('/imagesxjp/九江背景.png') no-repeat center center fixed;
             background-size: cover;
             overflow-x: hidden;
             overflow-y: hidden;
@@ -194,14 +194,14 @@
     <script src="https://webapi.amap.com/maps?v=2.0&key=762fa3a9356ba9e93b1f063fd5984ad0"></script>
     <script>
       // 景点坐标数据
-      var spots = [
+      /*var spots = [
         {
-          name: '哈工深圳校区',
+          name: '',
           position: [113.936, 22.593], // 哈尔滨工业大学深圳校区坐标
-          address: '深圳市南山区西丽深圳大学城'
+          address: ''
         },
         {
-          name: '南科大',
+          name: '',
           position: [113.931, 22.595], // 南方科技大学坐标
           address: '深圳市南山区学苑大道1088号'
         },
@@ -289,7 +289,7 @@
           markers[index].infoWindow.open(map, markers[index].position);
         }
       }
-    </script>
+    </script>*/
 
     <!-- 顶部高德地图 -->
     <div id="amap-container" style="width:100vw;height:300px;"></div>
@@ -301,10 +301,10 @@
                 景点打卡
             </div>
             <ul style="background:#fff;border:2px solid #ffd600;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);padding:10px 0 10px 0;margin:0;width:100%;box-sizing:border-box;">
-                <li>哈工深圳校区</li>
-                <li>南科大</li>
-                <li>世界之窗</li>
-                <li>深圳西交同乡会</li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
             </ul>
         </div>
         <hr style="align-self:stretch;margin:0;padding:0;border:none;border-left:2px solid #ffd600;height:100%;">
@@ -360,50 +360,14 @@
         var menuLis = document.querySelectorAll('.spot-menu li');
         var spotLogs = [
           `<div>
-            <p style='text-decoration:underline wavy blue;'>飞机落地深圳次日，准备去参观cxz孝子未来的大学——哈工深。</p>
-            <figure>
-              <img src="imgszc/3.jpg"  width=30%></img>
-              <img src="imgszc/5.jpg"  width=53%></img>
-              <figcaption>不错不错😊为孝子高兴</figcaption>
-            </figure>
-            <figure> 
-              <img src="imgszc/1.jpg"  width=60%></img>
-              <img src="imgszc/2.jpg"  width=33%></img>
-              <figcaption>校区看着不大🤫🤫</figcaption>
-            </figure>
-            <figure style="text-align:center;">
-              <img src="imgszc/4.jpg"  width=30%></img>
-              <figcaption>
-                也是和清华搭上关系了😒
-              </figcaption>
-              </figure>
-              <figure style="text-align:center;">
-                <img src="imgszc/6.jpg"  width=30%></img>
-                <img src="imgszc/7.jpg"  width=30%></img>
-                <figcaption>
-                  此时，我们的主角.....😌
-                </figcaption>
-                </figure>
-                <figure style="text-align:center;">
-                  <img src="imgszc/8.jpg"  width=26%></img>
-                  <img src="imgszc/9.jpg"  width=66%></img>
-                  <img src="imgszc/10.jpg"  width=30%></img>
-                  <figcaption>校园一景</figcaption></figure>
-                  <figure text-align:center;>
-                    <img src="imgszc/11.jpg"  width=50%></img>
-                    <figcaption>来一张深圳大学城地图</figcaption>
-                    </figure>
-                      <hr>
-                      <br>
-                      <p style="color:bgreen;">当日QQ动态：要怪就怪超短裙，害爸爸错失和孝子做大学同学的机会🤮 🤮<p>
-                        <img src="imgszc/12.jpg" width=30%></img>
+            
             </div>`,
-          `<div><h3>南科大</h3><p>南方科技大学是一所创新型大学，以理工科见长，校园现代化程度高。</p></div>`,
-          `<div><h3>世界之窗</h3><p>世界之窗是深圳著名的主题公园，汇集了世界各地的著名建筑和文化景观。</p></div>`,
-          `<div><h3>深圳西交同乡会</h3><p>西安交通大学深圳校友会，为在深圳的西交校友提供交流平台。</p></div>`
+          `<div></div>`,
+          `<div></div>`,
+          `<div></div>`
         ];
         // 相册图片数组（深圳景点图片）
-        var images = [
+        /*var images = [
           {src:'/images/szc1.jpg'},
           {src:'/images/szc2.jpg'},
           {src:'/images/szc3.jpg'},
@@ -412,7 +376,7 @@
           {src:'/images/szc6.jpg'},
           {src:'/images/szc7.jpg'},
           {src:'/images/szc8.jpg'}
-        ];
+        ];*/
         // 菜单切换只切换日志
         function updateSpotContent(idx) {
           document.querySelector('.log-content').innerHTML = spotLogs[idx];
